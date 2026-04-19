@@ -1,0 +1,15 @@
+{
+  "short_name": "Agenda Digital",
+  "name": "Agenda Digital",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1088/1088437.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./agenda.html",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "theme_color": "#000000"
+}
