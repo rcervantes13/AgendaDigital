@@ -1,15 +1,18 @@
 {
-  "short_name": "Agenda Digital",
   "name": "Agenda Digital",
+  "short_name": "Agenda Digital",
+  "description": "Gestión local de citas y calendario",
+  "start_url": "./agenda.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#27c470",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/1088/1088437.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "sizes": "512x512"
+      "purpose": "any maskable"
     }
-  ],
-  "start_url": "./agenda.html",
-  "background_color": "#ffffff",
-  "display": "standalone",
-  "theme_color": "#000000"
+  ]
 }
