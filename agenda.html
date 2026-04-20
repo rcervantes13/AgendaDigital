@@ -10,7 +10,7 @@
 	<link rel="manifest" href="manifest.json">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
@@ -22,7 +22,7 @@
 
 		body {
 			/* Fuente principal con respaldo de sans-serif del sistema */
-			font-family: Roboto, 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			font-family: Outfit, Roboto, 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 		}
 
 		.calendar--app{
@@ -54,7 +54,7 @@
 
 		.calendar--week .day-content{
 			font-weight: bold;
-			font-size: 22px;
+			font-size: 16px;
 			overflow: hidden;
 			text-align: center;
 			height: 32px;
@@ -92,7 +92,50 @@
 
 		.today{
 			border-radius: 50px;
+			transform: scale(.8);
 		}
+
+		.hy--select{
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: rgba(0, 0, 0, 0.2);
+			display: none;
+		}
+
+		.hy--select-content{
+			max-width: calc(100% - 38px);
+			background-color: #ffffff;
+			/* display: flex; */
+			/* flex-direction: column; */
+			/* align-items: center; */
+			min-width: 200px;
+			max-height: calc(100% - 38px);
+			overflow-y: auto;
+			height: calc(100% - 38px);
+			border-radius: 25px;
+			padding: 10px;
+		}
+
+		.hy-option {
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		    white-space: nowrap;
+		    width: calc(100% - 10px);
+		    text-align: center;
+		    font-size: 24px;
+		    margin: 2px 0px;
+		    height: 30px;
+		    /*border-bottom: 1px solid #cacaca;*/
+		    padding: 6px 0px;
+		    cursor: pointer;
+		}
+
 
 
 	</style>
@@ -115,6 +158,16 @@
 		</div>
 	</div>
 
+	<div class="hy--select" id="year--selector" >
+		<div class="hy--select-content" >
+			<!--div class="hy-option" >2026</div>
+			<div class="hy-option" >2025</div>
+			<div class="hy-option" >2024</div>
+			<div class="hy-option" >2023</div>
+			<div class="hy-option" >2022</div-->
+		</div>
+	</div>
+
 	<script type="text/javascript">
 
 		const ci = {
@@ -132,7 +185,7 @@
 			arrow: ` <svg> <glyph glyph-name="uniE951" unicode="&#xe951;" d="M663 425l36 36l-289 289l-73 -72l217 -217l-217 -217l73 -73l253 254v0z" /> </svg>`
 		}
 
-		const today = new Date()
+		let today = new Date()
 		const week_days = [
 			["Domingo", "Dom"], 
 			["Lunes", "Lun"], 
@@ -180,6 +233,10 @@
 				year: today.getFullYear(),
 				month: today.getMonth(),
 				day: 0
+			},
+			refreshToday: () => {
+				today = new Date()
+				calendar.today = today.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')
 			},
 			getCalendarDays: (year, month) => {
 				const days = []
@@ -244,9 +301,35 @@
 
 		const app = {
 			load: () => {
+				app.initSelectors()
 				Gui.drawCalendar()
+			},
+			initSelectors: () => {
+				const yearSelector = document.querySelector("#year--selector")
+				const selectContent = yearSelector.querySelector(".hy--select-content")
+				selectContent.innerHTML = ""
+
+				const currentYear = new Date().getFullYear()
+				const finalYear = 1997
+				const startYear = currentYear + 10
+				for (let i = startYear; i >= finalYear; i--) {
+					const option = document.createElement("div")
+					option.classList.add("hy-option")
+					option.innerHTML = i
+					selectContent.appendChild(option)
+					option.onclick = () => {
+						Gui.setYear(i)
+						const yearSelector = document.querySelector("#year--selector")
+						yearSelector.style.display = "none"
+					}
+				}
 			}
+
 		}
+
+
+		
+
 
 		const Gui = {
 			goCurrentMonth: () => {
@@ -280,6 +363,10 @@
 				Gui.drawCalendar()
 
 			},
+			setYear: (year) => {
+				calendar.currentDate.year  = year
+				Gui.drawCalendar()
+			},
 			drawCalendar: () => {
 				calendar_app.style.borderRadius = window.innerWidth < 850 ? null : "8px"
 				calendar_app.style.border = window.innerWidth < 850 ? null : "1px solid " + ci.basecolorligth
@@ -291,7 +378,7 @@
 				calendar_title.innerHTML = `
 					<div style="display: flex; font-size: 24px;" >
 						<div style="margin-right: 12px;" >${ months[calendar.currentDate.month] }</div>
-						<div>${ calendar.currentDate.year }</div>
+						<div style="font-size: 18px; position: relative; top: 1px; left: -7px;" class="year-activator" >${ calendar.currentDate.year }</div>
 					</div>
 					<div style="display: flex; align-items: center; justify-content: center;" >
 						<span onclick="Gui.goCurrentMonth()" class="material-symbols-outlined btn--base" >today</span>
@@ -299,6 +386,10 @@
 						<span onclick="Gui.nextMonth()" class="material-symbols-outlined btn--base" >chevron_right</span>
 					</div>
 				`
+				calendar_title.querySelector(".year-activator").onclick = () => {
+					const yearSelector = document.querySelector("#year--selector")
+					yearSelector.style.display = "flex"
+				}
 
 				Gui.drawWeekDays()
 				Gui.drawDays()
@@ -345,7 +436,8 @@
 						}else if(date.month === calendar.currentDate.month){
 							daydom.style.color = ci.basecolor
 						}
-
+						// Actualizamos el dia
+						calendar.refreshToday()
 						if(date.date_str == calendar.today){
 							daydom.classList.add("today")
 							daydom.style.backgroundColor = ci.primary
